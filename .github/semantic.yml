@@ -1,0 +1,67 @@
+# ------------------------------------------------------------------------------
+#
+# Configuration for probot/semantic-pull-requests GitHub check bot
+#
+# Installation/configuration docs here
+# https://github.com/probot/semantic-pull-requests#configuration
+#
+# Always validate the PR title, and ignore the commits
+titleOnly: true
+
+types:
+  - chore               # An internal change that is not observable by users.
+  - enhancement         # Any user observable enhancement to an existing feature.
+  - feat                # Any user observable new feature.
+  - fix                 # Any user observable bug fix.
+
+scopes:
+  - new item            # Any new "item", something the player can carry.
+  - new npc             # Any new non-player character (or critter, or ...).
+  - new object          # Any new object that cannot be carried by the player.
+  - new plugin          # Any new plugin the player can optionally enable.
+  - new story           # Any new story content.
+
+  # domains
+  - architecture        # Anything related to architecture.
+  - ci                  # Anything related to Exodus' CI environment.
+  - cli                 # Anything related to Exodus' CLI.
+  - component           # Anything related to ECS components.
+  - config              # Anything related to configuring Exodus.
+  - deps                # Anything related to Exodus' dependencies.
+  - dev                 # Anything related to Exodus' development environment.
+  - ecs                 # Anything related to ECS logic, but unrelated to entity/components/systems.
+  - entity              # Anything related to ECS entity logic.
+  - events              # Anything related to internal events.
+  - external docs       # Anything related to Exodus' external, public documentation.
+  - graphics            # Anything related to low-level graphics handling.
+  - input               # Anything related to player input handling.
+  - internal docs       # Anything related to Exodus' internal documentation.
+  - items               # Anything related to items.
+  - logs                # Anything related to Exodus' internal logs.
+  - main menu           # Anything related to the main menu.
+  - networking          # Anything related to networking.
+  - npcs                # Anything related to NPCs.
+  - objects             # Anything related to objects.
+  - observability       # Anything related to monitoring/observing Exodus.
+  - performance         # Anything related to Exodus' performance.
+  - physics             # Anything related to physics.
+  - platforms           # Anything related to Exodus's supported platforms.
+  - player              # Anything related to the player.
+  - plugin              # Anything related to core plugin logic (_not_ specific plugins).
+  - releasing           # Anything related to releasing Exodus.
+  - reload              # Anything related to reloading Exodus (updating configuration).
+  - setup               # Anything related to setting up or installing Exodus.
+  - story               # Anything related to a/the story.
+  - system              # Anything related to ECS systems.
+  - templating          # Anything related to templating Vector's configuration values
+  - tests               # Anything related to Exodus' internal tests.
+  - ui                  # Anything related to UI elements.
+
+  # platforms
+  - macos platform      # Anything `macOS` platform related.
+  - unix platform       # Anything `Unix` platform related.
+  - web platform        # Anything `web` platform related.
+  - windows platform    # Anything `Windows` platform related.
+
+  # plugins
+  - core plugin         # Anything related to the core Exodus plugin.
