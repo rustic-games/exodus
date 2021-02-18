@@ -1,0 +1,23 @@
+[package]
+name = "exodus"
+version = "0.1.0"
+edition = "2018"
+resolver = "2"
+authors = [
+    "Jean Mertz <git@jeanmertz.com>",
+    "Exodus Contributors <exodus@rustic.games>",
+]
+
+[features]
+headless = []
+
+[dependencies]
+bevy_rng = { git = "https://github.com/rustic-games/bevy_rng", default-features = false, features = ["bevy-nightly"] }
+cfg-if = "1"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "7be096a254e86bd6388d96ea10b56b9ed6210685", default-features = false, features = ["bevy_winit", "render", "png"] }
+bevy_webgl2 = { git = "https://github.com/rparrett/bevy_webgl2", branch = "update-for-bevy-master", default-features = false } # see: https://github.com/bevyengine/bevy/issues/793
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "7be096a254e86bd6388d96ea10b56b9ed6210685", default-features = false, features = ["bevy_winit", "render", "png", "bevy_wgpu"] }
