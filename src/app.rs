@@ -6,7 +6,8 @@ use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
 
 use crate::arch::{PLUGINS, RUNNER};
-use crate::state::State;
+use crate::event::Move;
+use crate::state::{Camera, World};
 use crate::system::*;
 
 pub struct Game;
@@ -21,11 +22,14 @@ impl Game {
         };
 
         App::build()
-            .add_stage_after(
-                stage::UPDATE,
-                "fixed_update",
-                SystemStage::parallel().with_run_criteria(FixedTimestep::steps_per_second(100.0)),
-            )
+            .insert_resource(WindowDescriptor {
+                title: "Exodus: The Morning Star".to_string(),
+                width: 1440.,
+                height: 900.,
+                vsync: true,
+                ..Default::default()
+            })
+            .add_event::<Move>()
             .add_startup_stage("game_boot", SystemStage::single(setup.system()))
             .add_startup_stage(
                 "game_setup",
@@ -33,12 +37,20 @@ impl Game {
                     .with_system(spawn_world.system())
                     .with_system(spawn_player.system()),
             )
+            .add_stage_after(
+                stage::UPDATE,
+                "fixed_update",
+                SystemStage::parallel().with_run_criteria(FixedTimestep::steps_per_second(100.0)),
+            )
+            .add_system(move_player.system())
+            .add_system(move_entity.system())
             .add_system(exit_on_esc_system.system())
             .insert_resource(mssa)
             .insert_resource(logger)
             .insert_resource(RUNNER)
             .insert_resource(window_background)
-            .init_resource::<State>()
+            .init_resource::<World>()
+            .init_resource::<Camera>()
             .add_plugins(PLUGINS)
             .add_plugin(bevy_rng::RngPlugin::from("foobar"))
             .add_plugins(DiagnosticsPlugins)
