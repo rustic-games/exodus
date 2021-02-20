@@ -5,7 +5,7 @@
 use bevy::input::{keyboard::KeyboardInput, ElementState};
 use bevy::prelude::*;
 
-use crate::kind::{Direction, Position};
+use crate::kind::{CameraFocus, Direction, Position};
 use crate::state::{Camera, Player, World};
 
 pub(crate) fn r#move(

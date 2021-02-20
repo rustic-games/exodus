@@ -46,6 +46,8 @@ impl Game {
                 SystemStage::parallel().with_run_criteria(FixedTimestep::steps_per_second(100.0)),
             )
             .add_system_to_stage("fixed_update", player::r#move.system())
+            .add_system(camera::zoom.system())
+            .add_system_to_stage("ui", camera::focus.system())
             .add_system(exit_on_esc_system.system())
             .insert_resource(mssa)
             .insert_resource(logger)
