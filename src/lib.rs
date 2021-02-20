@@ -1,7 +1,7 @@
 mod app;
 mod arch;
-mod component;
 mod event;
+mod kind;
 mod state;
 mod system;
 mod tile;

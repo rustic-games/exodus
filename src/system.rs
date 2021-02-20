@@ -1,7 +1,3 @@
-mod input;
-mod setup;
-mod world;
-
-pub(crate) use input::*;
-pub(crate) use setup::*;
-pub(crate) use world::*;
+pub(crate) mod player;
+pub(crate) mod setup;
+pub(crate) mod world;

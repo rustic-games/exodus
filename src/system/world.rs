@@ -1,11 +1,11 @@
 use bevy::prelude::*;
 use bevy_rng::*;
 
-use crate::component::*;
-use crate::state::{Player, World};
+use crate::kind::Position;
+use crate::state::World;
 use crate::tile::Tile;
 
-pub(crate) fn spawn_world(
+pub(crate) fn spawn(
     commands: &mut Commands,
     mut world: ResMut<World>,
     mut rng: Local<Rng>,
@@ -45,24 +45,4 @@ pub(crate) fn spawn_world(
     world.tiles = (0..30)
         .map(|x| (0..30).map(|y| generate_tile(x, y)).collect())
         .collect();
-}
-
-pub(crate) fn spawn_player(commands: &mut Commands, texture_atlas: Res<Handle<TextureAtlas>>) {
-    let position = Position { x: 0, y: 0 };
-    let entity = commands
-        .spawn(SpriteSheetBundle {
-            sprite: TextureAtlasSprite {
-                index: 2,
-                color: Color::YELLOW,
-            },
-            texture_atlas: texture_atlas.clone(),
-            transform: Transform::from_translation(Vec3::new(0., 0., 1.)),
-            ..Default::default()
-        })
-        .with(position)
-        .current_entity();
-
-    if let Some(entity) = entity {
-        commands.insert_resource(Player { entity, position });
-    }
 }

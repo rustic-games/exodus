@@ -6,7 +6,6 @@ use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
 
 use crate::arch::{PLUGINS, RUNNER};
-use crate::event::Move;
 use crate::state::{Camera, World};
 use crate::system::*;
 
@@ -29,21 +28,24 @@ impl Game {
                 vsync: true,
                 ..Default::default()
             })
-            .add_event::<Move>()
-            .add_startup_stage("game_boot", SystemStage::single(setup.system()))
+            .add_startup_stage("game_boot", SystemStage::single(setup::assets.system()))
             .add_startup_stage(
                 "game_setup",
                 SystemStage::parallel()
-                    .with_system(spawn_world.system())
-                    .with_system(spawn_player.system()),
+                    .with_system(world::spawn.system())
+                    .with_system(player::spawn.system()),
             )
             .add_stage_after(
-                stage::UPDATE,
+                CoreStage::Update,
                 "fixed_update",
                 SystemStage::parallel().with_run_criteria(FixedTimestep::steps_per_second(100.0)),
             )
-            .add_system(move_player.system())
-            .add_system(move_entity.system())
+            .add_stage_after(
+                "fixed_update",
+                "ui",
+                SystemStage::parallel().with_run_criteria(FixedTimestep::steps_per_second(100.0)),
+            )
+            .add_system_to_stage("fixed_update", player::r#move.system())
             .add_system(exit_on_esc_system.system())
             .insert_resource(mssa)
             .insert_resource(logger)
