@@ -16,8 +16,8 @@ bevy_rng = { git = "https://github.com/rustic-games/bevy_rng", default-features 
 cfg-if = "1"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "7be096a254e86bd6388d96ea10b56b9ed6210685", default-features = false, features = ["bevy_winit", "render", "png"] }
-bevy_webgl2 = { git = "https://github.com/rparrett/bevy_webgl2", branch = "update-for-bevy-master", default-features = false } # see: https://github.com/bevyengine/bevy/issues/793
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "c2a427f1a38db6b1d9798e631a7da7a8507fe18c", default-features = false, features = ["bevy_winit", "render", "png"] }
+bevy_webgl2 = { git = "https://github.com/mrk-its/bevy_webgl2", rev = "b5e842e421be56af9e69ababdaeb028b05c5b7a2", default-features = false } # see: https://github.com/bevyengine/bevy/issues/793
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "7be096a254e86bd6388d96ea10b56b9ed6210685", default-features = false, features = ["bevy_winit", "render", "png", "bevy_wgpu"] }
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "c2a427f1a38db6b1d9798e631a7da7a8507fe18c", default-features = false, features = ["bevy_winit", "render", "png", "bevy_wgpu"] }
