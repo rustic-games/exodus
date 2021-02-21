@@ -5,22 +5,14 @@
 use bevy::input::{keyboard::KeyboardInput, ElementState};
 use bevy::prelude::*;
 
-use crate::kind::{CameraFocus, Direction, Position};
-use crate::state::Player;
+use crate::kind::{CameraFocus, Direction, Player, Position};
 
 pub(crate) fn r#move(
     mut keyboard_input_events: EventReader<KeyboardInput>,
-    mut player: ResMut<Player>,
-    mut positions: Query<&mut Position>,
+    mut positions: Query<&mut Position, With<Player>>,
 ) {
-    let entity = player.entity;
-    let position = &mut player.position;
-
     let mut translate = |direction: Direction| {
-        let new_position = direction.to_coords().into();
-
-        *position += new_position;
-        *positions.get_mut(entity).unwrap() += new_position;
+        *positions.iter_mut().next().unwrap() += direction.to_coords().into()
     };
 
     for input in keyboard_input_events.iter() {
@@ -50,8 +42,7 @@ pub(crate) fn r#move(
 }
 
 pub(crate) fn spawn(commands: &mut Commands, texture_atlas: Res<Handle<TextureAtlas>>) {
-    let position = Position { x: 0, y: 0 };
-    let entity = commands
+    commands
         .spawn(SpriteSheetBundle {
             sprite: TextureAtlasSprite {
                 index: 2,
@@ -64,11 +55,7 @@ pub(crate) fn spawn(commands: &mut Commands, texture_atlas: Res<Handle<TextureAt
             },
             ..Default::default()
         })
-        .with(position)
+        .with(Position::default())
         .with(CameraFocus)
-        .current_entity();
-
-    if let Some(entity) = entity {
-        commands.insert_resource(Player { entity, position });
-    }
+        .with(Player);
 }
