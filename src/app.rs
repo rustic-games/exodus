@@ -22,9 +22,9 @@ impl Game {
         App::build()
             .insert_resource(WindowDescriptor {
                 title: "Exodus: The Morning Star".to_string(),
-                width: 1440.,
-                height: 900.,
-                vsync: true,
+                width: 1080.,
+                height: 675.,
+                vsync: false,
                 ..Default::default()
             })
             .add_startup_stage(
