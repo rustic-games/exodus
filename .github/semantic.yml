@@ -23,6 +23,7 @@ scopes:
 
   # domains
   - architecture        # Anything related to architecture.
+  - camera              # Anything related to the camera.
   - ci                  # Anything related to Exodus' CI environment.
   - cli                 # Anything related to Exodus' CLI.
   - component           # Anything related to ECS components.
@@ -39,6 +40,7 @@ scopes:
   - items               # Anything related to items.
   - logs                # Anything related to Exodus' internal logs.
   - main menu           # Anything related to the main menu.
+  - milo                # Anything related to "MILO" (move, interact, look, attack) system.
   - networking          # Anything related to networking.
   - npcs                # Anything related to NPCs.
   - objects             # Anything related to objects.
@@ -56,6 +58,12 @@ scopes:
   - templating          # Anything related to templating Vector's configuration values
   - tests               # Anything related to Exodus' internal tests.
   - ui                  # Anything related to UI elements.
+
+  # MILO modes
+  - move mode
+  - interact mode
+  - look mode
+  - attack mode
 
   # platforms
   - macos platform      # Anything `macOS` platform related.
