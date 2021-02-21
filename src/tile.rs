@@ -1,4 +1,4 @@
-#[derive(Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct Tile {
     revealed: bool,
     accessible: bool,
@@ -32,6 +32,7 @@ impl Tile {
 }
 
 /// The type of matter that makes up a tile.
+#[derive(Debug, Clone, Copy)]
 pub(crate) enum Matter {
     /// A solid tile.
     ///

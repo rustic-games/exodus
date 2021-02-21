@@ -1,7 +1,13 @@
 use bevy::prelude::*;
 use bevy::render::camera::Camera;
 
-use crate::kind::CameraFocus;
+use crate::kind::{CameraFocus, Position};
+
+pub(crate) fn spawn(commands: &mut Commands) {
+    commands
+        .spawn(OrthographicCameraBundle::new_2d())
+        .with(Position::default());
+}
 
 pub(crate) fn zoom(input: Res<Input<KeyCode>>, mut query: Query<&mut Transform, With<Camera>>) {
     enum ZoomDirection {
@@ -35,12 +41,12 @@ pub(crate) fn zoom(input: Res<Input<KeyCode>>, mut query: Query<&mut Transform, 
 }
 
 pub(crate) fn focus(
-    mut camera: Query<&mut Transform, With<Camera>>,
-    target: Query<&Transform, (With<CameraFocus>, Changed<Transform>)>,
+    mut camera: Query<&mut Position, With<Camera>>,
+    target: Query<&Position, (With<CameraFocus>, Changed<Position>)>,
 ) {
-    for target_transform in target.iter() {
-        for mut camera_transform in camera.iter_mut() {
-            *camera_transform.translation = *target_transform.translation;
+    for target_position in target.iter() {
+        for mut camera_position in camera.iter_mut() {
+            *camera_position = *target_position;
         }
     }
 }
