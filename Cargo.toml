@@ -14,6 +14,7 @@ headless = []
 [dependencies]
 bevy_rng = { git = "https://github.com/rustic-games/bevy_rng", default-features = false, features = ["bevy-nightly"] }
 cfg-if = "1"
+parking_lot = "0.11"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 bevy = { git = "https://github.com/bevyengine/bevy", rev = "c2a427f1a38db6b1d9798e631a7da7a8507fe18c", default-features = false, features = ["bevy_winit", "render", "png"] }

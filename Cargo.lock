@@ -1061,6 +1061,7 @@ dependencies = [
  "bevy_rng",
  "bevy_webgl2",
  "cfg-if 1.0.0",
+ "parking_lot",
 ]
 
 [[package]]
