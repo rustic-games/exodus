@@ -30,10 +30,10 @@ pub(crate) fn spawn(commands: &mut Commands, mut fix: ResMut<OnStateEnterFix>) {
         return;
     }
 
-    // TODO: configurable
-    let tile_count = 100;
+    // TODO: configurable, needs to be uneven to make (0,0) the center.
+    let tile_count = 101;
 
-    let mut tiles: Vec<Vec<Entity>> = vec![Vec::with_capacity(100); 100];
+    let mut tiles: Vec<Vec<Entity>> = vec![Vec::with_capacity(tile_count); tile_count];
     for i in 0..tile_count {
         for _ in 0..tile_count {
             let entity = commands.spawn((Tile::solid(),)).current_entity().unwrap();

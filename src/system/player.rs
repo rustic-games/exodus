@@ -7,15 +7,36 @@ use bevy::prelude::*;
 
 use crate::app::OnStateEnterFix;
 use crate::kind::{CameraFocus, Direction, Player, Position, TileSetAtlas};
+use crate::state::TileSet;
+use crate::tile::Tile;
 use crate::tracing;
 
-#[tracing::instrument(skip(keyboard_input_events, positions))]
+#[tracing::instrument(skip(tileset, keyboard_input_events, positions, tiles))]
 pub(crate) fn input(
+    tileset: Res<TileSet>,
     mut keyboard_input_events: EventReader<KeyboardInput>,
     mut positions: Query<&mut Position, With<Player>>,
+    tiles: Query<&Tile>,
 ) {
     let mut translate = |direction: Direction| {
-        *positions.iter_mut().next().unwrap() += direction.to_coords().into()
+        let player_position = *positions.iter_mut().next().unwrap();
+        let delta_position = direction.to_coords().into();
+
+        let new_position = player_position + delta_position;
+        info!(x = new_position.x, y = new_position.y, "player position");
+
+        if let Some(tile) = tileset.tile_at(new_position) {
+            let accessible = tiles
+                .get(tile.entity)
+                .map(|tile| tile.is_accessible())
+                .unwrap_or_default();
+
+            if !accessible {
+                return;
+            }
+
+            *positions.iter_mut().next().unwrap() = new_position;
+        }
     };
 
     for input in keyboard_input_events.iter() {

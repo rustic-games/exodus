@@ -7,6 +7,12 @@ pub(crate) struct Position {
     pub y: i32,
 }
 
+impl Position {
+    pub fn coordinates(self) -> (i32, i32) {
+        (self.x, self.y)
+    }
+}
+
 impl From<(i32, i32)> for Position {
     fn from((x, y): (i32, i32)) -> Self {
         Self { x, y }

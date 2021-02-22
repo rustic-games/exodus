@@ -23,6 +23,15 @@ impl TileSet {
             .find_map(|rows| rows.iter().find(|tile| tile.entity == entity))
             .copied()
     }
+
+    pub fn tile_at(&self, position: Position) -> Option<TileSetTile> {
+        let (x, y) = position.coordinates();
+
+        self.tiles
+            .get((((self.tiles.len() - 1) / 2) as i32 + x) as usize)
+            .and_then(|rows| rows.get((((rows.len() - 1) / 2) as i32 + y) as usize))
+            .copied()
+    }
 }
 
 /// A tile stored in a tile set, including all state related to the tile set.

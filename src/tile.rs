@@ -21,6 +21,10 @@ impl Tile {
     pub fn accessible(&mut self, accessible: bool) {
         self.accessible = accessible;
     }
+
+    pub fn is_accessible(&self) -> bool {
+        self.accessible
+    }
 }
 
 /// The type of matter that makes up a tile.
