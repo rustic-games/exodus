@@ -30,71 +30,77 @@ pub(crate) fn tiles(
     pool: Res<ComputeTaskPool>,
     atlas: Res<TileSetAtlas>,
     tileset: Res<TileSet>,
-    tiles: Query<Entity, Changed<Tile>>,
+    mut tiles: Query<(Entity, &mut Tile), Changed<Tile>>,
 
     // TODO: remove, see note below
     rng: Local<Rng>,
 ) {
+    if tiles.iter_mut().next().is_none() {
+        return;
+    }
+
     let tile_size = atlas.sprite_size as i32;
 
     let rng = Arc::new(Mutex::new(rng.clone()));
 
-    tiles.par_iter(50).for_each(&pool, |entity| {
-        let commands = Arc::clone(&commands);
-        let rng = Arc::clone(&rng);
+    tiles
+        .par_iter_mut(50)
+        .for_each(&pool, |(entity, mut tile)| {
+            let commands = Arc::clone(&commands);
+            let rng = Arc::clone(&rng);
 
-        let tileset_tile = match tileset.tile(entity) {
-            Some(tile) => tile,
-            None => {
-                warn!("tried to fetch non-existing tile in tileset");
-                return;
-            }
-        };
+            let tileset_tile = match tileset.tile(entity) {
+                Some(tile) => tile,
+                None => {
+                    warn!("tried to fetch non-existing tile in tileset");
+                    return;
+                }
+            };
 
-        // TODO:
-        //
-        // Tiles themselves don't represent any "thing".
-        //
-        // Take for example a tree, it is its own entity, and has its own
-        // logic and sprite.
-        //
-        // Similarly, a tile doesn't need to have its ground covered (think
-        // grass, dirt), because some tiles might not be accessible (think
-        // tunnels underground, outside of the tunnels there's "nothing",
-        // because you can't actually walk there unless you excavate that
-        // location first).
-        //
-        // For simplicity, right now we treat each tile as having either a tree
-        // or a ground but at some point this will have to be refactored.
+            // TODO:
+            //
+            // Tiles themselves don't represent any "thing".
+            //
+            // Take for example a tree, it is its own entity, and has its own
+            // logic and sprite.
+            //
+            // Similarly, a tile doesn't need to have its ground covered (think
+            // grass, dirt), because some tiles might not be accessible (think
+            // tunnels underground, outside of the tunnels there's "nothing",
+            // because you can't actually walk there unless you excavate that
+            // location first).
+            //
+            // For simplicity, right now we treat each tile as having either a tree
+            // or a ground but at some point this will have to be refactored.
 
-        let is_tree = rng.lock().gen_ratio(1, 20);
-        let (index, color) = if is_tree {
-            (TileSprite::Tree.index(), Color::GREEN)
-        } else {
-            (TileSprite::Grass.index(), Color::DARK_GREEN)
-        };
+            let is_tree = rng.lock().gen_ratio(1, 20);
+            let (index, color) = if is_tree {
+                (TileSprite::Tree.index(), Color::GREEN)
+            } else {
+                (TileSprite::Grass.index(), Color::DARK_GREEN)
+            };
 
-        // TODO: fog of war
-        // tile.revealed(true);
-        // tile.accessible(!is_tree);
+            // TODO: fog of war
+            tile.revealed(true);
+            tile.accessible(!is_tree);
 
-        let size = (tileset.tiles.len() / 2) as i32;
+            let size = (tileset.tiles.len() / 2) as i32;
 
-        let x = tileset_tile.position.x * tile_size - size * tile_size;
-        let y = tileset_tile.position.y * tile_size - size * tile_size;
+            let x = tileset_tile.position.x * tile_size - size * tile_size;
+            let y = tileset_tile.position.y * tile_size - size * tile_size;
 
-        commands.lock().insert(
-            entity,
-            SpriteSheetBundle {
-                sprite: TextureAtlasSprite { index, color },
-                texture_atlas: atlas.clone(),
-                transform: Transform {
-                    translation: Vec3::new(x as f32, y as f32, 0.),
-                    scale: Vec3::one(),
+            commands.lock().insert(
+                entity,
+                SpriteSheetBundle {
+                    sprite: TextureAtlasSprite { index, color },
+                    texture_atlas: atlas.clone(),
+                    transform: Transform {
+                        translation: Vec3::new(x as f32, y as f32, 0.),
+                        scale: Vec3::one(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
-                ..Default::default()
-            },
-        );
-    })
+            );
+        })
 }
