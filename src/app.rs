@@ -7,7 +7,6 @@ use bevy::prelude::*;
 use bevy_rng::RngPlugin;
 
 use crate::arch::{DEFAULT_PLUGINS, RUNNER};
-use crate::tracing;
 
 use label::SystemLabel;
 use plugin::AppPlugin;

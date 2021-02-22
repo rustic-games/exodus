@@ -33,14 +33,12 @@ pub(crate) fn spawn(commands: &mut Commands, mut fix: ResMut<OnStateEnterFix>) {
     // TODO: configurable
     let tile_count = 100;
 
-    let mut tiles = vec![vec![]];
-    for _ in 0..tile_count {
-        let mut rows = vec![];
+    let mut tiles: Vec<Vec<Entity>> = vec![Vec::with_capacity(100); 100];
+    for i in 0..tile_count {
         for _ in 0..tile_count {
             let entity = commands.spawn((Tile::solid(),)).current_entity().unwrap();
-            rows.push(entity);
+            tiles[i].push(entity);
         }
-        tiles.push(rows);
     }
 
     let tileset = TileSet::from_iter(tiles);
