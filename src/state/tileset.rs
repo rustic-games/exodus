@@ -4,6 +4,7 @@ use std::iter::FromIterator;
 
 use crate::kind::Position;
 
+#[derive(Default, Debug)]
 pub(crate) struct TileSet {
     /// A collection of tiles.
     ///

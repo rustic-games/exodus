@@ -13,12 +13,12 @@ pub(super) const RUNNER: ScheduleRunnerSettings = if cfg!(feature = "headless") 
 cfg_if::cfg_if! {
     if #[cfg(feature = "headless")] {
         use bevy::MinimalPlugins;
-        pub(super) const PLUGINS: MinimalPlugins = MinimalPlugins;
+        pub(super) const DEFAULT_PLUGINS: MinimalPlugins = MinimalPlugins;
     } else if #[cfg(target_arch = "wasm32")]  {
         use bevy_webgl2::DefaultPlugins;
-        pub(super) const PLUGINS: DefaultPlugins = DefaultPlugins;
+        pub(super) const DEFAULT_PLUGINS: DefaultPlugins = DefaultPlugins;
     } else {
         use bevy::DefaultPlugins;
-        pub(super) const PLUGINS: DefaultPlugins = DefaultPlugins;
+        pub(super) const DEFAULT_PLUGINS: DefaultPlugins = DefaultPlugins;
     }
 }

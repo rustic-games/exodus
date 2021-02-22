@@ -1,85 +1,71 @@
-use bevy::app::PluginGroupBuilder;
-use bevy::core::FixedTimestep;
-use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
-use bevy::input::system::exit_on_esc_system;
-use bevy::log::{Level, LogSettings};
-use bevy::prelude::*;
+mod label;
+mod plugin;
+mod stage;
+mod state;
 
-use crate::arch::{PLUGINS, RUNNER};
-use crate::system::*;
+use bevy::prelude::*;
+use bevy_rng::RngPlugin;
+
+use crate::arch::{DEFAULT_PLUGINS, RUNNER};
+use crate::tracing;
+
+use label::SystemLabel;
+use plugin::AppPlugin;
+use stage::AppStage;
+pub(crate) use state::AppState;
+
+// Temporary hack until `on_state_enter` works as expected.
+//
+// See: <https://github.com/bevyengine/bevy/issues/1117>
+#[derive(Default, Debug)]
+pub(crate) struct OnStateEnterFix {
+    pub tileset_spawn: bool,
+    pub player_spawn: bool,
+    pub camera_spawn: bool,
+}
 
 pub struct Game;
 
 impl Game {
+    #[tracing::instrument(level = "warn")]
     pub fn run() {
-        let window_background = ClearColor(Color::rgb(0., 0., 0.));
-        let mssa = Msaa { samples: 4 };
-        let logger = LogSettings {
-            level: Level::INFO,
-            filter: "wgpu=warn,bevy_ecs=info".to_string(),
-        };
-
         App::build()
+            // Debug
+            .add_plugin(plugin::DebugPlugin)
+            // General
+            .add_plugins(DEFAULT_PLUGINS)
+            .insert_resource(RUNNER)
+            // Window
             .insert_resource(WindowDescriptor {
                 title: "Exodus: The Morning Star".to_string(),
                 width: 1080.,
                 height: 675.,
                 vsync: false,
+                resizable: true,
                 ..Default::default()
             })
-            .add_startup_stage(
-                "game_boot",
-                SystemStage::parallel()
-                    .with_system(setup::assets.system())
-                    .with_system(tileset::setup.system()),
-            )
-            .add_startup_stage(
-                "game_setup",
-                SystemStage::parallel()
-                    .with_system(tileset::spawn.system())
-                    .with_system(player::spawn.system())
-                    .with_system(camera::spawn.system()),
-            )
-            .add_stage_after(
+            .insert_resource(ClearColor(Color::BLACK))
+            // Stages
+            .add_stage_before(
                 CoreStage::Update,
-                "fixed_update",
-                SystemStage::parallel()
-                    .with_run_criteria(FixedTimestep::steps_per_second(100.0))
-                    .with_system(player::r#move.system()),
+                AppStage::Update,
+                StateStage::<AppState>::default(),
             )
             .add_stage_after(
-                "fixed_update",
-                "tracked_changes",
-                SystemStage::parallel()
-                    .with_system(tileset::track_entities.system())
-                    .with_system(camera::focus.system())
-                    .with_system(camera::zoom.system()),
+                AppStage::Update,
+                AppStage::Physics,
+                StateStage::<AppState>::default(),
             )
             .add_stage_after(
-                "tracked_changes",
-                "render",
-                SystemStage::parallel()
-                    .with_system(render::update_translation.system())
-                    .with_system(render::tiles.system()),
+                AppStage::Physics,
+                AppStage::View,
+                StateStage::<AppState>::default(),
             )
-            .add_system(exit_on_esc_system.system())
-            .insert_resource(mssa)
-            .insert_resource(logger)
-            .insert_resource(RUNNER)
-            .insert_resource(window_background)
-            .add_plugins(PLUGINS)
-            .add_plugin(bevy_rng::RngPlugin::from("foobar"))
-            .add_plugins(DiagnosticsPlugins)
-            .run()
-    }
-}
-
-struct DiagnosticsPlugins;
-
-impl PluginGroup for DiagnosticsPlugins {
-    fn build(&mut self, group: &mut PluginGroupBuilder) {
-        group
-            .add(LogDiagnosticsPlugin::default())
-            .add(FrameTimeDiagnosticsPlugin::default());
+            // App State
+            .insert_resource(State::new(AppState::Loading))
+            // Plugins
+            .add_plugin(RngPlugin::from("<random seed>"))
+            .add_plugin(AppPlugin)
+            .run();
     }
 }

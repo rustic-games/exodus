@@ -5,12 +5,15 @@
 use bevy::input::{keyboard::KeyboardInput, ElementState};
 use bevy::prelude::*;
 
-use crate::kind::{CameraFocus, Direction, Player, Position};
+use crate::app::OnStateEnterFix;
+use crate::kind::{CameraFocus, Direction, Player, Position, TileSetAtlas};
 
-pub(crate) fn r#move(
+pub(crate) fn input(
     mut keyboard_input_events: EventReader<KeyboardInput>,
     mut positions: Query<&mut Position, With<Player>>,
 ) {
+    trace!("system::player::input");
+
     let mut translate = |direction: Direction| {
         *positions.iter_mut().next().unwrap() += direction.to_coords().into()
     };
@@ -41,14 +44,24 @@ pub(crate) fn r#move(
     }
 }
 
-pub(crate) fn spawn(commands: &mut Commands, texture_atlas: Res<Handle<TextureAtlas>>) {
+pub(crate) fn spawn(
+    commands: &mut Commands,
+    atlas: Res<TileSetAtlas>,
+    mut fix: ResMut<OnStateEnterFix>,
+) {
+    if fix.player_spawn {
+        trace!(running = false, "system::player::spawn");
+        return;
+    }
+    trace!(running = true, "system::player::spawn");
+
     commands
         .spawn(SpriteSheetBundle {
             sprite: TextureAtlasSprite {
                 index: 2,
                 color: Color::YELLOW,
             },
-            texture_atlas: texture_atlas.clone(),
+            texture_atlas: atlas.clone(),
             transform: Transform {
                 translation: Vec3::new(0., 0., 1.),
                 ..Default::default()
@@ -58,4 +71,6 @@ pub(crate) fn spawn(commands: &mut Commands, texture_atlas: Res<Handle<TextureAt
         .with(Position::default())
         .with(CameraFocus)
         .with(Player);
+
+    fix.player_spawn = true;
 }
