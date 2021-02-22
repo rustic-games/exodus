@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use std::ops::{Deref, DerefMut};
 
+#[derive(Debug)]
 pub(crate) struct TileSetAtlas {
     pub handle: Handle<TextureAtlas>,
     pub sprite_size: u8,

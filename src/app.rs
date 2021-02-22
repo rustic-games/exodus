@@ -27,7 +27,6 @@ pub(crate) struct OnStateEnterFix {
 pub struct Game;
 
 impl Game {
-    #[tracing::instrument(level = "warn")]
     pub fn run() {
         App::build()
             // Debug

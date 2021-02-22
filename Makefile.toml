@@ -7,7 +7,7 @@ TARGET_DIR = "target"
 CARGO_MANIFEST_DIR = "${CARGO_MAKE_WORKING_DIRECTORY}"
 
 [env.development]
-CARGO_ARGS = "--features bevy/dynamic"
+CARGO_ARGS = "--features bevy/dynamic,bevy/trace_chrome"
 
 [env.release]
 CARGO_RELEASE_ARGS = "--release"

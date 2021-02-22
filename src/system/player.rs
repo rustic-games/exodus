@@ -7,13 +7,13 @@ use bevy::prelude::*;
 
 use crate::app::OnStateEnterFix;
 use crate::kind::{CameraFocus, Direction, Player, Position, TileSetAtlas};
+use crate::tracing;
 
+#[tracing::instrument(skip(keyboard_input_events, positions))]
 pub(crate) fn input(
     mut keyboard_input_events: EventReader<KeyboardInput>,
     mut positions: Query<&mut Position, With<Player>>,
 ) {
-    trace!("system::player::input");
-
     let mut translate = |direction: Direction| {
         *positions.iter_mut().next().unwrap() += direction.to_coords().into()
     };
@@ -44,16 +44,15 @@ pub(crate) fn input(
     }
 }
 
+#[tracing::instrument(skip(commands, atlas))]
 pub(crate) fn spawn(
     commands: &mut Commands,
     atlas: Res<TileSetAtlas>,
     mut fix: ResMut<OnStateEnterFix>,
 ) {
     if fix.player_spawn {
-        trace!(running = false, "system::player::spawn");
         return;
     }
-    trace!(running = true, "system::player::spawn");
 
     commands
         .spawn(SpriteSheetBundle {

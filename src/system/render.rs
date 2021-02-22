@@ -4,9 +4,11 @@ use bevy_rng::*;
 use crate::kind::{Position, TileSetAtlas, TileSprite};
 use crate::state::TileSet;
 use crate::tile::Tile;
+use crate::tracing;
 
 /// For any entity for which its tileset position has changed, update its
 /// viewport translation property to match the new position.
+#[tracing::instrument(skip(target))]
 pub(crate) fn update_translation(
     atlas: Res<TileSetAtlas>,
     mut target: Query<(&Position, &mut Transform), Changed<Position>>,
@@ -19,6 +21,7 @@ pub(crate) fn update_translation(
     }
 }
 
+#[tracing::instrument(skip(commands, tiles))]
 pub(crate) fn tiles(
     commands: &mut Commands,
     atlas: Res<TileSetAtlas>,

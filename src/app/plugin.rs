@@ -126,13 +126,12 @@ impl Plugin for DebugPlugin {
         };
         use bevy::log::{Level, LogSettings};
 
-        app
-            // .insert_resource(ReportExecutionOrderAmbiguities)
+        app.insert_resource(ReportExecutionOrderAmbiguities)
             .add_plugin(LogDiagnosticsPlugin::default())
             .add_plugin(EntityCountDiagnosticsPlugin::default())
             .add_plugin(FrameTimeDiagnosticsPlugin::default())
             .insert_resource(LogSettings {
-                level: Level::WARN,
+                level: Level::INFO,
                 filter: "wgpu_core=error,bevy_ecs=info".to_string(),
             });
     }

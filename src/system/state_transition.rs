@@ -4,7 +4,9 @@ use bevy::prelude::*;
 
 use crate::app::AppState;
 use crate::kind::TileSetAtlas;
+use crate::tracing;
 
+#[tracing::instrument(skip(asset_server))]
 pub(crate) fn loading_to_running(
     mut state: ResMut<State<AppState>>,
     mut app_exit_events: ResMut<Events<AppExit>>,
