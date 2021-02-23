@@ -52,6 +52,7 @@ scopes:
   - plugin              # Anything related to core plugin logic (_not_ specific plugins).
   - releasing           # Anything related to releasing Exodus.
   - reload              # Anything related to reloading Exodus (updating configuration).
+  - rfc                 # Anything related to the "Request For Change" process.
   - setup               # Anything related to setting up or installing Exodus.
   - story               # Anything related to a/the story.
   - system              # Anything related to ECS systems.
