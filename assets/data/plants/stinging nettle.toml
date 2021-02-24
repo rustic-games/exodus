@@ -1,0 +1,7 @@
+type = 'plant'
+id = '5df90281-d547-459e-b411-c5f6f87f5738'
+name = 'Stinging Nettle'
+habit = 'herb'
+
+[max_height]
+cm = 180

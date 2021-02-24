@@ -1,7 +1,9 @@
 use bevy::input::system::exit_on_esc_system;
 use bevy::prelude::*;
+use bevy_assets_toml::{Toml, TomlLoader};
 
 use super::{AppStage as Stage, AppState as State, SystemLabel as Label};
+use crate::kind::{DataHandleCollection, PlantData};
 use crate::state::TileSet;
 use crate::system::*;
 
@@ -12,10 +14,13 @@ pub struct DebugPlugin;
 
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app
+        app.add_asset_loader(TomlLoader)
+            .add_asset::<Toml>()
             // Hack
             //
             // see: <https://discord.com/channels/691052431525675048/742884593551802431/813310203599912980>
+            .init_resource::<DataHandleCollection>()
+            .init_resource::<PlantData>()
             .init_resource::<TileSet>()
             // Exit System
             .add_system(exit_on_esc_system.system())
@@ -31,11 +36,23 @@ impl Plugin for LoadingStagePlugin {
         let state = State::Loading;
 
         app
+            // Data Asset Loading
+            .on_state_enter(
+                Stage::Update,
+                state,
+                data::load.system().label(Label::DatumLoad),
+            )
             // Tileset Asset Loading
             .on_state_enter(
                 Stage::Update,
                 state,
                 tileset::setup.system().label(Label::TileSetSetup),
+            )
+            // Data Type Initialization
+            .on_state_update(
+                Stage::Update,
+                state,
+                data::setup.system().label(Label::DataTypeSetup),
             )
             // Loading State Transition
             .on_state_update(

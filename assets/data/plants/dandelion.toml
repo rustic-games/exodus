@@ -1,0 +1,7 @@
+type = 'plant'
+id = '46b4b358-8c91-4557-89e8-6e8404dde8c1'
+name = 'Dandelion'
+habit = 'grass'
+
+[max_height]
+cm = 20

@@ -4,7 +4,7 @@ use bevy_rng::*;
 use parking_lot::Mutex;
 use std::sync::Arc;
 
-use crate::kind::{Position, TileSetAtlas, TileSprite};
+use crate::kind::{PlantData, Position, TileSetAtlas, TileSprite};
 use crate::state::TileSet;
 use crate::tile::Tile;
 use crate::tracing;
@@ -31,6 +31,7 @@ pub(crate) fn tiles(
     atlas: Res<TileSetAtlas>,
     tileset: Res<TileSet>,
     mut tiles: Query<(Entity, &mut Tile), Changed<Tile>>,
+    plants: Res<PlantData>,
 
     // TODO: remove, see note below
     rng: Local<Rng>,
@@ -75,7 +76,22 @@ pub(crate) fn tiles(
 
             let is_tree = rng.lock().gen_ratio(1, 20);
             let (index, color) = if is_tree {
-                (TileSprite::Tree.index(), Color::GREEN)
+                let mut color = Color::GREEN;
+                let pos = rng.lock().gen_range(0..plants.len());
+
+                if let Some((_, plant)) = plants.iter().enumerate().find(|(i, _)| *i == pos) {
+                    match plant.name.as_ref() {
+                        "Dandelion" => color = Color::ORANGE_RED,
+                        "Stinging Nettle" => {
+                            color.set_g(1.0);
+                        }
+                        _ => {
+                            color.set_g(0.5);
+                        }
+                    };
+                }
+
+                (TileSprite::Tree.index(), color)
             } else {
                 (TileSprite::Grass.index(), Color::DARK_GREEN)
             };

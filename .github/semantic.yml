@@ -23,11 +23,13 @@ scopes:
 
   # domains
   - architecture        # Anything related to architecture.
+  - assets              # Anything related to assets and asset management.
   - camera              # Anything related to the camera.
   - ci                  # Anything related to Exodus' CI environment.
   - cli                 # Anything related to Exodus' CLI.
   - component           # Anything related to ECS components.
   - config              # Anything related to configuring Exodus.
+  - data                # Anything related to data-driven object management.
   - deps                # Anything related to Exodus' dependencies.
   - dev                 # Anything related to Exodus' development environment.
   - ecs                 # Anything related to ECS logic, but unrelated to entity/components/systems.
